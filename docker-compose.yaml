@@ -1,6 +1,8 @@
 services:
   n8n:
-    image: n8nio/n8n
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
     container_name: n8n
     ports:
       - "5678:5678"
@@ -15,6 +17,7 @@ services:
       - N8N_PORT=5678
     volumes:
       - n8n_data:/home/node/.n8n
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
   ollama:
@@ -25,7 +28,7 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    tty: true  # importante para o ollama funcionar bem
+    tty: true
 
 volumes:
   n8n_data:
