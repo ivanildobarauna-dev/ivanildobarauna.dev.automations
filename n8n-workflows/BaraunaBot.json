@@ -1,0 +1,486 @@
+{
+  "name": "BaraunaBot",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f55240a-0b98-4644-ad9c-693ad9d6a451",
+              "name": "name",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "81e3bccc-8a4d-4e0f-99a6-4e2ccc826e09",
+              "name": "language",
+              "value": "={{ $json.message.from.language_code }}",
+              "type": "string"
+            },
+            {
+              "id": "dba58451-fb6a-4790-88b9-1ee22301c24f",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "21a89487-9207-47f8-95db-8359c6472e0b",
+              "name": "chat_type",
+              "value": "={{ $json.message.entities[0].type }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -460,
+        -140
+      ],
+      "id": "c6b8d2db-90ae-4386-baa9-0ba7e1faa11d",
+      "name": "Telegram Fields Mapping"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "chatIds": "1260278001"
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -780,
+        0
+      ],
+      "id": "d9921066-2389-4a30-a817-f1fd45a3ea3f",
+      "name": "Telegram Listener",
+      "webhookId": "8d8259d3-e37b-4e80-9312-4833bc7f0d1b",
+      "credentials": {
+        "telegramApi": {
+          "id": "rSJC9CTbeIKjoVsB",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db3d18a8-42fe-4c83-8168-65a88e31f6af",
+              "leftValue": "={{ $json.chat_type }}",
+              "rightValue": "bot_command",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        40
+      ],
+      "id": "e17632bb-1c92-4f9e-af60-3c89c5c3c76a",
+      "name": "Fiter BotCommands"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d4b96254-9dbc-48b4-ba24-cc0ef7579d53",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/status",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        -100
+      ],
+      "id": "59f292e0-c990-4539-8a13-8a90354274df",
+      "name": "/status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/uptime",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        280
+      ],
+      "id": "827e0fbf-e77a-4c3a-b6de-acce5ead7eca",
+      "name": "/uptime"
+    },
+    {
+      "parameters": {
+        "command": "top -b -n 1 | head -5\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -300
+      ],
+      "id": "e2eda56f-89ce-40c1-a9b8-72d25debf509",
+      "name": "CPU/RAM",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "command": "df -h / | tail -1\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -100
+      ],
+      "id": "06ae8b35-7640-4408-b454-ccd978940bbe",
+      "name": "DISK",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "command": "docker ps --format \"{{.Names}}\" | wc -l\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        360,
+        100
+      ],
+      "id": "7831aa59-33a9-480f-af12-b3663c1c2189",
+      "name": "ActiveContainers",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "numberInputs": 3,
+        "query": "SELECT\n  CASE WHEN input1.stdout IS NOT NULL AND input1.stdout != '' THEN input1.stdout ELSE NULL END AS cpu_ram,\n  CASE WHEN input2.stdout IS NOT NULL AND input2.stdout != '' THEN input2.stdout ELSE NULL END AS disk,\n  CAST(input3.stdout AS INTEGER) AS containers_count\nFROM input1, input2, input3\n"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        820,
+        -260
+      ],
+      "id": "3acd7110-6669-4b0e-9ee5-13d3f969ce91",
+      "name": "Merge",
+      "alwaysOutputData": true,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n    \"model\": \"gemma2:2b\",\n    \"prompt\": {{ JSON.stringify($json[\"prompt\"]) }},\n    \"stream\": false\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1260,
+        -260
+      ],
+      "id": "b89eaeb2-a86b-452e-88b5-6555512a57ac",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8bd44d88-65a9-4241-a5f2-038cb69c1f44",
+              "name": "prompt",
+              "value": "=Gere uma mensagem em Markdown compatível com Telegram contendo apenas o seguinte conteúdo.\nUse os dados: cpu/ram: {{$json[\"cpu_ram\"]}}, disco: {{$json[\"disk\"]}}, containers: {{$json[\"containers_count\"]}}\n\nA mensagem deve ter exatamente o seguinte formato:\n\n*Status de Infraestrutura*\n\n🖥️ CPU: 50% de Uso  \n📈 RAM: 40% de Uso  \n💽 Disco: 33% de uso  \nContainers Ativos: 5\n\n*Links úteis:*  \n- DataDog Monitors: https://us5.datadoghq.com/monitors/manage\nNão adicione mais nada além disso. Responda com a mensagem já formatada. Não explique. Não repita os dados brutos calcule os percentuais com base nos dados recebidos. ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -260
+      ],
+      "id": "0b489521-4f26-4c84-a8e4-9119eeac9a50",
+      "name": "Prompt Builder"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55eb1550-7377-4da7-8738-004cfeb264a5",
+              "name": "ia_response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1480,
+        -260
+      ],
+      "id": "ef73b4ac-476e-4463-89af-1b3340cdba49",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "1260278001",
+        "text": "={{$json.ia_response}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1700,
+        -280
+      ],
+      "id": "49927ab8-be65-40d6-a114-96e32d6e2535",
+      "name": "Telegram",
+      "webhookId": "bca7990a-1afb-45d6-9279-de62a28f1196",
+      "credentials": {
+        "telegramApi": {
+          "id": "rSJC9CTbeIKjoVsB",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Fields Mapping": {
+      "main": [
+        [
+          {
+            "node": "Fiter BotCommands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Listener": {
+      "main": [
+        [
+          {
+            "node": "Telegram Fields Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fiter BotCommands": {
+      "main": [
+        [
+          {
+            "node": "/uptime",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "/status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/uptime": {
+      "main": [
+        []
+      ]
+    },
+    "/status": {
+      "main": [
+        [
+          {
+            "node": "CPU/RAM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DISK",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ActiveContainers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CPU/RAM": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DISK": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "ActiveContainers": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Prompt Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Builder": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4ee65a1-756b-4890-9d6d-669cb89688c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ff7c1e2e91aaf7f8ad84dc2dc0e885eb7518e9b587226b212c16663bb75013a"
+  },
+  "id": "cTmeXUvKNnODi9yD",
+  "tags": []
+}
