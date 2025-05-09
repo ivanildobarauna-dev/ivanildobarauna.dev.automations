@@ -10,6 +10,7 @@ services:
       - N8N_BASIC_AUTH_PASSWORD=suasenha
       - N8N_HOST=n8n.ivanildobarauna.dev
       - WEBHOOK_TUNNEL_URL=https://n8n.ivanildobarauna.dev
+      - WEBHOOK_URL=https://n8n.ivanildobarauna.dev/
       - N8N_PORT=5678
     volumes:
       - n8n_data:/home/node/.n8n
