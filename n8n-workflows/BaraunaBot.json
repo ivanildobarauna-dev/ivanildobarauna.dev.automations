@@ -1,5 +1,5 @@
 {
-  "name": "BaraunaBot",
+  "name": "Baraunabot copy",
   "nodes": [
     {
       "parameters": {
@@ -36,10 +36,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -460,
-        -140
+        -840,
+        160
       ],
-      "id": "c6b8d2db-90ae-4386-baa9-0ba7e1faa11d",
+      "id": "28588c0e-3728-4a3e-bd88-40120db5d0d2",
       "name": "Telegram Fields Mapping"
     },
     {
@@ -54,15 +54,15 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -780,
-        0
+        -1160,
+        300
       ],
-      "id": "d9921066-2389-4a30-a817-f1fd45a3ea3f",
+      "id": "d966f4d4-c97a-47e8-bc1a-f06bb945dac3",
       "name": "Telegram Listener",
-      "webhookId": "8d8259d3-e37b-4e80-9312-4833bc7f0d1b",
+      "webhookId": "52a43d3e-2c14-4c66-8ef1-02ef41913099",
       "credentials": {
         "telegramApi": {
-          "id": "rSJC9CTbeIKjoVsB",
+          "id": "XQuRur6dVexqEOfy",
           "name": "Telegram account"
         }
       }
@@ -94,10 +94,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -200,
-        40
+        -580,
+        340
       ],
-      "id": "e17632bb-1c92-4f9e-af60-3c89c5c3c76a",
+      "id": "647e9a55-5209-4d38-b9be-c653d66b1cd6",
       "name": "Fiter BotCommands"
     },
     {
@@ -128,10 +128,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        80,
-        -100
+        -300,
+        200
       ],
-      "id": "59f292e0-c990-4539-8a13-8a90354274df",
+      "id": "df844c7e-74ec-470b-abe8-48253e52c237",
       "name": "/status"
     },
     {
@@ -162,170 +162,46 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        80,
-        280
+        -300,
+        580
       ],
-      "id": "827e0fbf-e77a-4c3a-b6de-acce5ead7eca",
+      "id": "6d5ba3d4-e208-446c-b4ed-f66892a1ab10",
       "name": "/uptime"
     },
     {
       "parameters": {
-        "command": "top -b -n 1 | head -5\n"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        380,
-        -300
-      ],
-      "id": "e2eda56f-89ce-40c1-a9b8-72d25debf509",
-      "name": "CPU/RAM",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "command": "df -h / | tail -1\n"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        360,
-        -100
-      ],
-      "id": "06ae8b35-7640-4408-b454-ccd978940bbe",
-      "name": "DISK",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "command": "docker ps --format \"{{.Names}}\" | wc -l\n"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        360,
-        100
-      ],
-      "id": "7831aa59-33a9-480f-af12-b3663c1c2189",
-      "name": "ActiveContainers",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "mode": "combineBySql",
-        "numberInputs": 3,
-        "query": "SELECT\n  CASE WHEN input1.stdout IS NOT NULL AND input1.stdout != '' THEN input1.stdout ELSE NULL END AS cpu_ram,\n  CASE WHEN input2.stdout IS NOT NULL AND input2.stdout != '' THEN input2.stdout ELSE NULL END AS disk,\n  CAST(input3.stdout AS INTEGER) AS containers_count\nFROM input1, input2, input3\n"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.1,
-      "position": [
-        820,
-        -260
-      ],
-      "id": "3acd7110-6669-4b0e-9ee5-13d3f969ce91",
-      "name": "Merge",
-      "alwaysOutputData": true,
-      "executeOnce": false
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "http://ollama:11434/api/generate",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "=json",
-        "bodyParameters": {
-          "parameters": [
-            {}
-          ]
-        },
-        "jsonBody": "={\n    \"model\": \"gemma2:2b\",\n    \"prompt\": {{ JSON.stringify($json[\"prompt\"]) }},\n    \"stream\": false\n  }",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1260,
-        -260
-      ],
-      "id": "b89eaeb2-a86b-452e-88b5-6555512a57ac",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "8bd44d88-65a9-4241-a5f2-038cb69c1f44",
-              "name": "prompt",
-              "value": "=Gere uma mensagem em Markdown compatível com Telegram contendo apenas o seguinte conteúdo.\nUse os dados: cpu/ram: {{$json[\"cpu_ram\"]}}, disco: {{$json[\"disk\"]}}, containers: {{$json[\"containers_count\"]}}\n\nA mensagem deve ter exatamente o seguinte formato:\n\n*Status de Infraestrutura*\n\n🖥️ CPU: 50% de Uso  \n📈 RAM: 40% de Uso  \n💽 Disco: 33% de uso  \nContainers Ativos: 5\n\n*Links úteis:*  \n- DataDog Monitors: https://us5.datadoghq.com/monitors/manage\nNão adicione mais nada além disso. Responda com a mensagem já formatada. Não explique. Não repita os dados brutos calcule os percentuais com base nos dados recebidos. ",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1040,
-        -260
-      ],
-      "id": "0b489521-4f26-4c84-a8e4-9119eeac9a50",
-      "name": "Prompt Builder"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "55eb1550-7377-4da7-8738-004cfeb264a5",
-              "name": "ia_response",
-              "value": "={{ $json.response }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1480,
-        -260
-      ],
-      "id": "ef73b4ac-476e-4463-89af-1b3340cdba49",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
         "chatId": "1260278001",
-        "text": "={{$json.ia_response}}",
+        "text": "={{ $json.stdout }}",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1700,
-        -280
+        400,
+        200
       ],
-      "id": "49927ab8-be65-40d6-a114-96e32d6e2535",
+      "id": "b9e025f8-bb1a-4e9e-ab41-beb854b519aa",
       "name": "Telegram",
-      "webhookId": "bca7990a-1afb-45d6-9279-de62a28f1196",
+      "webhookId": "c84da5be-2d54-4f87-b74d-d07b5b2e367e",
       "credentials": {
         "telegramApi": {
-          "id": "rSJC9CTbeIKjoVsB",
+          "id": "XQuRur6dVexqEOfy",
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "command": "#!/bin/bash\n\n# CPU (uso total em %)\nCPU_USAGE=$(top -bn1 | grep \"Cpu(s)\" | awk '{print 100 - $8}')\n\n# RAM (uso em %)\nMEM_USAGE=$(free | awk '/Mem:/ { printf(\"%.2f\"), $3/$2 * 100 }')\n\n# Disco (uso em % da partição raiz)\nDISK_USAGE=$(df -h / | awk 'NR==2 {print $5}' | tr -d '%')\n\n# Containers Docker em execução\nDOCKER_CONTAINERS=$(docker ps -q | wc -l)\n\n# Exibe o resultado formatado\necho \"🔧 Status do Sistema:\"\necho \"🖥️ CPU usada: ${CPU_USAGE}%\"\necho \"📈 RAM usada: ${MEM_USAGE}%\"\necho \"💽 Disco usado: ${DISK_USAGE}%\"\necho \"📦 Containers Docker ativos: ${DOCKER_CONTAINERS}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        40,
+        200
+      ],
+      "id": "a9e56780-b718-467c-9352-a9c4b94f8bb1",
+      "name": "System Status"
     }
   ],
   "pinData": {},
@@ -368,57 +244,14 @@
         ]
       ]
     },
-    "/uptime": {
-      "main": [
-        []
-      ]
-    },
     "/status": {
       "main": [
         [
           {
-            "node": "CPU/RAM",
+            "node": "System Status",
             "type": "main",
             "index": 0
           },
-          {
-            "node": "DISK",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "ActiveContainers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "CPU/RAM": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "DISK": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "ActiveContainers": {
-      "main": [
-        [
           {
             "node": "Merge",
             "type": "main",
@@ -427,40 +260,7 @@
         ]
       ]
     },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Prompt Builder",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Prompt Builder": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
+    "System Status": {
       "main": [
         [
           {
@@ -476,11 +276,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a4ee65a1-756b-4890-9d6d-669cb89688c3",
+  "versionId": "7cfc6aee-d37c-4077-be8b-739c748468b7",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "5ff7c1e2e91aaf7f8ad84dc2dc0e885eb7518e9b587226b212c16663bb75013a"
+    "instanceId": "94e111e939528bef4bdabc7d63e49d22d18540866cf0e7b707d125a85b1d650e"
   },
-  "id": "cTmeXUvKNnODi9yD",
+  "id": "L3hHXFFI4PLLae58",
   "tags": []
 }

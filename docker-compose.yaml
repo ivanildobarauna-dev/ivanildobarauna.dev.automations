@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile.n8n
     container_name: n8n
+    network_mode: host
     ports:
       - "5678:5678"
     environment:
