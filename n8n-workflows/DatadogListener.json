@@ -1,0 +1,320 @@
+{
+  "name": "DatadogListener",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d7b328b6-e66a-4d20-903b-17e2a0318cd4",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        -60
+      ],
+      "id": "54d059d3-3ef4-4a42-8a3e-6431cce21293",
+      "name": "Datadog Webhook Listener",
+      "webhookId": "d7b328b6-e66a-4d20-903b-17e2a0318cd4",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dDjXJX6pgYo1bAcQ",
+          "name": "x-request-source-validation-datadog"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "1260278001",
+        "file": "={{ $('Datadog Webhook Listener').item.json.body.image }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        -20
+      ],
+      "id": "771fee08-847c-45f8-a7d3-c1c6735df05f",
+      "name": "Alert Image",
+      "webhookId": "23df0ef6-b288-4c32-9341-5a88cb5b7455",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d9b29e3-5cde-4117-a288-172b8f250d83",
+              "leftValue": "={{ $json.body.alert_type }}",
+              "rightValue": "Triggered",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        -300
+      ],
+      "id": "0e1df3cb-f260-4315-8985-942e3642beae",
+      "name": "Triggered"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d9b29e3-5cde-4117-a288-172b8f250d83",
+              "leftValue": "={{ $json.body.alert_type }}",
+              "rightValue": "Warn",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        -40
+      ],
+      "id": "52fabbf5-6d2c-4a7c-b2af-81e27562951b",
+      "name": "Warn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d9b29e3-5cde-4117-a288-172b8f250d83",
+              "leftValue": "={{ $json.body.alert_type }}",
+              "rightValue": "Recovered",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        200
+      ],
+      "id": "10c3d291-42d6-4005-afcb-12f7fa4fd939",
+      "name": "Recovered"
+    },
+    {
+      "parameters": {
+        "chatId": "1260278001",
+        "text": "=⚠️ *Datadog Warning* ⚠️\n\n📌 *Título:* {{ $json.body.title }}  \n📊 *Métrica:* {{ $json.body.metric }}\n\n🔗 [Ver Monitor no Datadog]({{ $json.body.monitor }}  )\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -40
+      ],
+      "id": "172f4264-59e3-41a3-805c-c01aba45f7ed",
+      "name": "Warning",
+      "webhookId": "45c68e84-eee5-4153-ae12-23b612b4d312",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1260278001",
+        "text": "=🚨 *Datadog New Alert* 🚨\n\n📌 *Título:* {{ $json.body.title }}  \n📊 *Métrica:* {{ $json.body.metric }}\n\n🔗 [Ver Monitor no Datadog]({{ $json.body.monitor }}  )\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -300
+      ],
+      "id": "bd5f4ee0-8d41-46ea-828f-b144b18830d9",
+      "name": "Alerts",
+      "webhookId": "45c68e84-eee5-4153-ae12-23b612b4d312",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1260278001",
+        "text": "=✅  *Data Recovered Monitor * ✅ \n\n📌 *Título:* {{ $json.body.title }}  \n📊 *Métrica:* {{ $json.body.metric }}\n\n🔗 [Ver Monitor no Datadog]({{ $json.body.monitor }}  )\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        200
+      ],
+      "id": "8c9c88e9-a885-4fe8-b74d-b1acd178bc50",
+      "name": "Recovered1",
+      "webhookId": "45c68e84-eee5-4153-ae12-23b612b4d312",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Datadog Webhook Listener": {
+      "main": [
+        [
+          {
+            "node": "Triggered",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Warn",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Recovered",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Triggered": {
+      "main": [
+        [
+          {
+            "node": "Alerts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warn": {
+      "main": [
+        [
+          {
+            "node": "Warning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recovered": {
+      "main": [
+        [
+          {
+            "node": "Recovered1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warning": {
+      "main": [
+        [
+          {
+            "node": "Alert Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerts": {
+      "main": [
+        [
+          {
+            "node": "Alert Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recovered1": {
+      "main": [
+        [
+          {
+            "node": "Alert Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "687691f3-8c2a-45bf-ae77-26a892bca2e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b9025eeaaf6d4d966aeed13b9e57cc517633664030745a80c1b979d83df7cb9"
+  },
+  "id": "BWfOlFvQ1PNN2gLz",
+  "tags": []
+}

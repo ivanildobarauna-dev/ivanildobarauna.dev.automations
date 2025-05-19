@@ -1,0 +1,622 @@
+{
+  "name": "InfraWatcher",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f55240a-0b98-4644-ad9c-693ad9d6a451",
+              "name": "name",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "81e3bccc-8a4d-4e0f-99a6-4e2ccc826e09",
+              "name": "language",
+              "value": "={{ $json.message.from.language_code }}",
+              "type": "string"
+            },
+            {
+              "id": "dba58451-fb6a-4790-88b9-1ee22301c24f",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "21a89487-9207-47f8-95db-8359c6472e0b",
+              "name": "chat_type",
+              "value": "={{ $json.message.entities[0].type }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f3a4bc4c-cbb5-4fea-9649-9ab69c42da73",
+      "name": "Telegram Fields Mapping"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "chatIds": "1260278001"
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        140
+      ],
+      "id": "37f1e470-5489-4d1f-907d-761e9b710397",
+      "name": "Telegram Listener",
+      "webhookId": "52a43d3e-2c14-4c66-8ef1-02ef41913099",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db3d18a8-42fe-4c83-8168-65a88e31f6af",
+              "leftValue": "={{ $json.chat_type }}",
+              "rightValue": "bot_command",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        180
+      ],
+      "id": "897ec088-4b10-4e23-a410-53352e84fdf3",
+      "name": "Fiter BotCommands"
+    },
+    {
+      "parameters": {
+        "chatId": "1260278001",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        280
+      ],
+      "id": "1543a91d-804e-40f7-847c-e5ccd3b01727",
+      "name": "Telegram",
+      "webhookId": "c84da5be-2d54-4f87-b74d-d07b5b2e367e",
+      "credentials": {
+        "telegramApi": {
+          "id": "thJ3IPQtHxaTlmlx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "./opt/scripts/system_status.sh"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -20
+      ],
+      "id": "cbf3d97d-e3ef-4bd0-8e63-3cd688034b8f",
+      "name": "status",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "aNXKaG4q7DkAhkVn",
+          "name": "SSH Private Key account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "./opt/scripts/uptime.sh"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        800,
+        140
+      ],
+      "id": "f8c527aa-7d8b-4a07-8e2a-48322221ec0f",
+      "name": "uptime",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "aNXKaG4q7DkAhkVn",
+          "name": "SSH Private Key account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "sudo /opt/scripts/nginx_stats_agg.sh"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        800,
+        320
+      ],
+      "id": "149a0cc4-90eb-42a2-8a60-01d3f051ed50",
+      "name": "nginx-stats",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "aNXKaG4q7DkAhkVn",
+          "name": "SSH Private Key account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d4b96254-9dbc-48b4-ba24-cc0ef7579d53",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/top",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        -20
+      ],
+      "id": "27136fc8-80f6-42ce-8b38-4924344bd8ea",
+      "name": "/top"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/containers",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        140
+      ],
+      "id": "a78b37d6-5450-48ed-82f3-c46ec207222f",
+      "name": "/containers"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/traffic",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        320
+      ],
+      "id": "06fa7050-d8e5-413e-9d45-61a1dc4f248a",
+      "name": "traffic"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/logs",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        500
+      ],
+      "id": "58617e2f-d79a-4ff6-887e-430c6513196c",
+      "name": "container-logs"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "./opt/scripts/container_logs.sh"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        800,
+        500
+      ],
+      "id": "45434dd5-df9f-42a8-8afe-8d96757654a1",
+      "name": "nginx-stats1",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "aNXKaG4q7DkAhkVn",
+          "name": "SSH Private Key account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/health_check",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        660
+      ],
+      "id": "2bcde6ea-ecbf-4901-8330-e1437141245c",
+      "name": "health_check"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "./opt/scripts/health_check.sh"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        800,
+        660
+      ],
+      "id": "d83decc1-f424-42f4-8ea5-7c9377caf0a4",
+      "name": "health_check1",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "aNXKaG4q7DkAhkVn",
+          "name": "SSH Private Key account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "911417ee-9b83-42f2-97af-b736dba842e0",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/restart_service",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        840
+      ],
+      "id": "a60f6b95-8582-4dd8-8854-be9aec5d44d9",
+      "name": "restart"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Fields Mapping": {
+      "main": [
+        [
+          {
+            "node": "Fiter BotCommands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Listener": {
+      "main": [
+        [
+          {
+            "node": "Telegram Fields Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fiter BotCommands": {
+      "main": [
+        [
+          {
+            "node": "/containers",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "/top",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "traffic",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "container-logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "health_check",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "restart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "status": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "uptime": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nginx-stats": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/top": {
+      "main": [
+        [
+          {
+            "node": "status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/containers": {
+      "main": [
+        [
+          {
+            "node": "uptime",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "traffic": {
+      "main": [
+        [
+          {
+            "node": "nginx-stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        []
+      ]
+    },
+    "container-logs": {
+      "main": [
+        [
+          {
+            "node": "nginx-stats1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nginx-stats1": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "health_check": {
+      "main": [
+        [
+          {
+            "node": "health_check1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "health_check1": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "restart": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "72857168-fa24-4d14-a34d-5d5917d1f75d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b9025eeaaf6d4d966aeed13b9e57cc517633664030745a80c1b979d83df7cb9"
+  },
+  "id": "P9eJOvaNjcQlSsEX",
+  "tags": []
+}
