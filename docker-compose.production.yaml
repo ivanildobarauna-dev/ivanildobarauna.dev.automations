@@ -17,6 +17,10 @@ services:
       - WEBHOOK_URL=https://n8n.ivanildobarauna.dev/
       - GENERIC_TIMEZONE=UTC
       - N8N_PORT=5678
+      - N8N_REDIS_HOST=localhost
+      - N8N_REDIS_PORT=6379
+      - N8N_REDIS_DB=0
+      - N8N_REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - n8n_data:/home/node/.n8n
       - /var/run/docker.sock:/var/run/docker.sock
@@ -32,6 +36,24 @@ services:
     restart: unless-stopped
     tty: true
 
+  redis:
+    image: redis:7
+    container_name: redis
+    network_mode: host
+    restart: unless-stopped
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--requirepass", "${REDIS_PASS}",
+      "--bind", "127.0.0.1",
+      "--protected-mode", "yes",
+      "--maxmemory", "512mb",
+      "--maxmemory-policy", "allkeys-lru"
+    ]
+    volumes:
+      - redis_data:/data
+
 volumes:
   n8n_data:
   ollama_data:
+  redis_data:
