@@ -24,10 +24,37 @@ services:
       - N8N_USER_MANAGEMENT_DISABLED=true
       - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      # Configurações do PostgreSQL
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - n8n_data:/home/node/.n8n
+      - type: volume
+        source: n8n_data
+        target: /home/node/.n8n
+        volume:
+          nocopy: true
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
 
   ollama:
     image: ollama/ollama
@@ -65,5 +92,10 @@ networks:
 
 volumes:
   n8n_data:
-  ollama_data:
+    external: true
+  postgres_data:
+    external: true
   redis_data:
+    external: true
+  ollama_data:
+    external: true
