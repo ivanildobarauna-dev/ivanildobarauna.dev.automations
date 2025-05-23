@@ -9,17 +9,25 @@ services:
       - "5678:5678"
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=n8nadm
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
       - GENERIC_TIMEZONE=UTC
       - N8N_PORT=5678
       - N8N_REDIS_HOST=redis
       - N8N_REDIS_PORT=6379
       - N8N_REDIS_DB=0
+      - N8N_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
     volumes:
       - n8n_data:/home/node/.n8n
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    networks:
+      - app_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   ollama:
     image: ollama/ollama
@@ -30,14 +38,30 @@ services:
       - ollama_data:/root/.ollama
     restart: unless-stopped
     tty: true
+    networks:
+      - app_network
 
   redis:
     image: redis:7
     container_name: redis
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes"]
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--requirepass", "${REDIS_PASSWORD}",
+      "--protected-mode", "yes",
+      "--maxmemory", "512mb",
+      "--maxmemory-policy", "allkeys-lru"
+    ]
     volumes:
       - redis_data:/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    name: app_network
+    driver: bridge
 
 volumes:
   n8n_data:
