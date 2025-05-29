@@ -74,6 +74,8 @@ services:
       - DD_AGENT_HOST=172.17.0.1
       - DD_PROCESS_AGENT_ENABLED=true
       - DD_TAGS="app:postgres"
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
