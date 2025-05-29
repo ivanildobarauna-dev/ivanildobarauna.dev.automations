@@ -7,13 +7,5 @@ const tracer = require('dd-trace').init({
     runtimeMetrics: true,
     analytics: true
   });
-  
-  console.log('[dd-trace] Tracing initialized ✅');
-  
-  // Span manual no boot do container
-  tracer.trace('n8n.boot', { resource: 'container startup' }, (span) => {
-    span.setTag('startup', true);
-    span.setTag('status', 'ok');
-    span.finish();
-  });
-  
+
+console.log('[dd-trace] Tracing initialized ✅');
