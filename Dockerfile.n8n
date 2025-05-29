@@ -9,4 +9,13 @@ RUN npm install dd-trace
 
 COPY ./n8n/data/tracing.js /data/tracing.js
 
+##### Configuração do Datadog
+COPY ./n8n/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+#####
+
 USER node
+
+##### Configuração do Datadog
+ENTRYPOINT ["/entrypoint.sh"]
+#####
