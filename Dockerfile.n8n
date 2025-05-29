@@ -17,5 +17,5 @@ RUN chmod +x /entrypoint.sh
 USER node
 
 ##### Configuração do Datadog
-ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["/entrypoint.sh"]
 #####
