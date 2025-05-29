@@ -11,4 +11,4 @@ COPY ./n8n/data/tracing.js /data/tracing.js
 
 USER node
 
-CMD ["/usr/local/bin/node", "-r", "/data/tracing.js", "/usr/local/lib/node_modules/n8n/dist/index.js"]
+CMD ["tini", "--", "n8n"]
