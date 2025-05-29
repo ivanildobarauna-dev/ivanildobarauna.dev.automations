@@ -10,8 +10,8 @@ const tracer = require('./node_modules/dd-trace').init({
 
 console.log('[dd-trace] Tracing initialized ✅');
 
-tracer.trace('n8n.boot', { resource: 'container startup' }, (span) => {
+tracer.trace('n8n.boot', { resource: 'post-start tracer' }, (span) => {
   span.setTag('startup', true);
-  span.setTag('status', 'ok');
+  span.setTag('origin', 'manual tracer exec');
   span.finish();
 });

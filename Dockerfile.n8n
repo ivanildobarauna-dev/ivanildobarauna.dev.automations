@@ -5,10 +5,8 @@ USER root
 RUN apk update && \
     apk add docker-cli curl
 
-# Copia os arquivos de tracing para dentro do container
+# Copia e instala dd-trace localmente
 COPY ./n8n/data /tracer
-
-# Instala o dd-trace localmente no diretório do tracer
-# RUN cd /tracer && npm install
+RUN cd /tracer && npm install
 
 USER node
