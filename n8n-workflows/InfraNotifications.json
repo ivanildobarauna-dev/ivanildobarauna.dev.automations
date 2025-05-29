@@ -1,0 +1,615 @@
+{
+  "name": "InfraNotifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "6c007a68-0384-4ff1-bd22-99a8a3208ccd",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        20
+      ],
+      "id": "60c3e3e6-8e8d-4519-b590-03fb8794d6d5",
+      "name": "Webhook",
+      "webhookId": "6c007a68-0384-4ff1-bd22-99a8a3208ccd",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "wIUG214ApXhzgARZ",
+          "name": "DataDogHeaderAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9869f840-cb7d-4681-9e18-0b013eaee100",
+                    "leftValue": "={{ $json.body.alert_type }}",
+                    "rightValue": "Warn",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Warn"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.alert_type }}",
+                    "rightValue": "Triggered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c36adaca-c2e7-43eb-82a0-3cc230184c83"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Triggered"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2655e0af-3a21-4ef6-948c-4f3af8ac1893",
+                    "leftValue": "={{ $json.body.alert_type }}",
+                    "rightValue": "Recovered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Recovered"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3b43c752-9996-41a4-ac90-e7e4cae30791",
+                    "leftValue": "={{ $json.body.alert_type }}",
+                    "rightValue": "Re-Triggered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Re-Triggered"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "0da11368-7ba5-4998-a74f-f4b3d9c72d92",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json.chat_id }}",
+        "file": "={{ $json.body.image }}",
+        "additionalFields": {
+          "caption": "=⚠️ <b>{{ $json.body.title }}</b>\n\n📊 <b>Métrica:</b> <code>{{ $json.body.metric }}</code>\n\n🔗 <b>Links:</b>\n<a href=\"{{ $json.body.monitor }}\">🖥️ Ver Monitor no Datadog</a>\n<a href=\"https://us5.datadoghq.com/monitors/manage\">🛠️ Gerenciar Monitores</a>\n",
+          "parse_mode": "HTML",
+          "message_thread_id": "={{ $('ChatID Adding').item.json.thread_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        -160
+      ],
+      "id": "62504a70-49ff-4a1d-8aee-f55e1b3c02a3",
+      "name": "Warning",
+      "webhookId": "042c33c9-b111-4e68-adf2-b328e880004c",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95317164-f78a-4483-8509-75c422f7a792",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "object"
+            },
+            {
+              "id": "da67d4bd-f619-432c-a438-abd8e900ab8c",
+              "name": "chat_id",
+              "value": "-1002588304306",
+              "type": "string"
+            },
+            {
+              "id": "8d0dc600-cbfd-4674-b041-abaca5941815",
+              "name": "thread_id",
+              "value": "2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -220,
+        20
+      ],
+      "id": "c3ac150f-d808-472e-ab14-f1e3aa33f542",
+      "name": "ChatID Adding"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ String($('Webhook').item.json.body.alert_cycle_key )}}",
+        "value": "={{ $json.result.message_id }}",
+        "keyType": "string"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        500,
+        -160
+      ],
+      "id": "dd23469b-ce58-46e8-ac70-00b4caaa8477",
+      "name": "SetMessageId",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message_id",
+        "key": "={{ String($('Webhook').item.json.body.alert_cycle_key )}}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        280,
+        260
+      ],
+      "id": "23f5b16f-3367-422a-b129-1799a727be59",
+      "name": "GetMessageIdToRecovery",
+      "alwaysOutputData": false,
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message_id",
+        "key": "={{ String($('Webhook').item.json.body.alert_cycle_key )}}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        280,
+        40
+      ],
+      "id": "a3846313-8401-4d6f-a66e-9338bba13169",
+      "name": "GetMessageIdToAlert",
+      "alwaysOutputData": false,
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Switch').item.json.chat_id }}",
+        "file": "={{ $('Webhook').item.json.body.image }}",
+        "additionalFields": {
+          "caption": "=♻️ <b>Atualização de status:</b> 🚨 <b>{{ $('Webhook').item.json.body.alert_type }}</b>\n\n<a href=\"{{ $('Webhook').item.json.body.monitor }}\">🖥️ Ver Monitor no Datadog</a>\n",
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $json.message_id }}",
+          "message_thread_id": "={{ $('ChatID Adding').item.json.thread_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        140
+      ],
+      "id": "d2f50d47-7443-4e8f-a40f-d59a03458e24",
+      "name": "SendAlertImage",
+      "webhookId": "042c33c9-b111-4e68-adf2-b328e880004c",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Switch').item.json.chat_id }}",
+        "file": "={{ $('Webhook').item.json.body.image }}",
+        "additionalFields": {
+          "caption": "=♻️ <b>Atualização de status:</b> ✅ <b>{{ $('Webhook').item.json.body.alert_type }}</b>\n\n<a href=\"{{ $('Webhook').item.json.body.monitor }}\">🖥️ Ver Monitor no Datadog</a>\n",
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $json.message_id }}",
+          "message_thread_id": "={{ $('ChatID Adding').item.json.thread_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        560
+      ],
+      "id": "447d744d-2097-4025-9015-d364a3567722",
+      "name": "SendRecoveryImage",
+      "webhookId": "042c33c9-b111-4e68-adf2-b328e880004c",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -420,
+        20
+      ],
+      "id": "9f9e32b6-3ac7-4fe7-8d4e-966d395d4757",
+      "name": "Wait",
+      "webhookId": "41db1ac8-f2ec-418d-b874-5b943b6ecfb2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c51f716f-a47c-4836-96e0-f27ac9d366b2",
+              "leftValue": "={{ $json.message_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        40
+      ],
+      "id": "6507b889-4406-41dc-84b9-6ec92cddac5e",
+      "name": "MesssaIdValidate"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Switch').item.json.chat_id }}",
+        "file": "={{ $('Webhook').item.json.body.image }}",
+        "additionalFields": {
+          "caption": "=🚨 <b>{{ $('Webhook').item.json.body.title }}</b>\n\n📊 <b>Métrica:</b> <code>{{ $('Webhook').item.json.body.metric }}</code>\n\n🔗 <b>Links:</b>\n<a href=\"{{ $('Webhook').item.json.body.monitor }}\">🖥️ Ver Monitor no Datadog</a>\n<a href=\"https://us5.datadoghq.com/monitors/manage\">🛠️ Gerenciar Monitores</a>\n",
+          "parse_mode": "HTML",
+          "message_thread_id": "={{ $('ChatID Adding').item.json.thread_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        -60
+      ],
+      "id": "65860b5c-9215-4eba-9901-a7c7b9916d4c",
+      "name": "SendNewAlertMessage",
+      "webhookId": "042c33c9-b111-4e68-adf2-b328e880004c",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c51f716f-a47c-4836-96e0-f27ac9d366b2",
+              "leftValue": "={{ $json.message_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        360
+      ],
+      "id": "80766ea6-d8d7-4300-8eef-75b975bd9729",
+      "name": "MesssaIdValidateToRecovery"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Switch').item.json.chat_id }}",
+        "file": "={{ $('Webhook').item.json.body.image }}",
+        "additionalFields": {
+          "caption": "=✅ <b>{{ $('Webhook').item.json.body.title }}</b>\n\n📊 <b>Métrica:</b> <code>{{ $('Webhook').item.json.body.metric }}</code>\n\n🔗 <b>Links:</b>\n<a href=\"{{ $('Webhook').item.json.body.monitor }}\">🖥️ Ver Monitor no Datadog</a>\n<a href=\"https://us5.datadoghq.com/monitors/manage\">🛠️ Gerenciar Monitores</a>\n",
+          "parse_mode": "HTML",
+          "message_thread_id": "={{ $('ChatID Adding').item.json.thread_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        340
+      ],
+      "id": "31491042-1c30-412c-b180-027b31aec460",
+      "name": "SendNewRecoveryMessage",
+      "webhookId": "042c33c9-b111-4e68-adf2-b328e880004c",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Warning",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GetMessageIdToAlert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GetMessageIdToRecovery",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Warning": {
+      "main": [
+        [
+          {
+            "node": "SetMessageId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatID Adding": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMessageIdToRecovery": {
+      "main": [
+        [
+          {
+            "node": "MesssaIdValidateToRecovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMessageIdToAlert": {
+      "main": [
+        [
+          {
+            "node": "MesssaIdValidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "ChatID Adding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendAlertImage": {
+      "main": [
+        []
+      ]
+    },
+    "MesssaIdValidate": {
+      "main": [
+        [
+          {
+            "node": "SendNewAlertMessage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendAlertImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MesssaIdValidateToRecovery": {
+      "main": [
+        [
+          {
+            "node": "SendNewRecoveryMessage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendRecoveryImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5fefe2d7-b23c-4245-bdb6-60e56b361bdf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8038ae3fc3fb39fd3d15323fd5f22964d079890e49da24db99a1c3d831d0f60a"
+  },
+  "id": "fFZwVufge8Ayrwkm",
+  "tags": []
+}

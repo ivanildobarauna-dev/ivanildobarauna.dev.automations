@@ -1,0 +1,368 @@
+{
+  "name": "GithubEvents",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "441ab43a-2e6b-446c-b526-51387ef433e2",
+              "name": "body.pull_request.title",
+              "value": "={{ $json.body.pull_request.title }}",
+              "type": "string"
+            },
+            {
+              "id": "285b3315-66e9-482e-9efc-8f06c497105d",
+              "name": "body.action",
+              "value": "={{ $json.body.action }}",
+              "type": "string"
+            },
+            {
+              "id": "4e34f3d0-acff-425b-b77e-770fd047a15c",
+              "name": "body.pull_request.url",
+              "value": "={{ $json.body.pull_request.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "205adcc4-3107-4671-8e20-e08556af4ed6",
+              "name": "body.pull_request.state",
+              "value": "={{ $json.body.pull_request.state }}",
+              "type": "string"
+            },
+            {
+              "id": "685fddb4-78e4-427b-b1b8-62ba88013eca",
+              "name": "body.pull_request.commits",
+              "value": "={{ $json.body.pull_request.commits }}",
+              "type": "number"
+            },
+            {
+              "id": "8915330b-9d38-48e2-b6cd-204cc4292d51",
+              "name": "body.pull_request.additions",
+              "value": "={{ $json.body.pull_request.additions }}",
+              "type": "number"
+            },
+            {
+              "id": "28bbbbb8-ce44-49f2-8276-aff9254b2cd4",
+              "name": "body.pull_request.deletions",
+              "value": "={{ $json.body.pull_request.deletions }}",
+              "type": "number"
+            },
+            {
+              "id": "b3b19555-db78-4545-bc89-8150d5e0d023",
+              "name": "body.pull_request.changed_files",
+              "value": "={{ $json.body.pull_request.changed_files }}",
+              "type": "number"
+            },
+            {
+              "id": "44f91693-69ca-45ff-998a-9f3ec8015655",
+              "name": "body.repository.name",
+              "value": "={{ $json.body.repository.name }}",
+              "type": "string"
+            },
+            {
+              "id": "cf3b3dda-9942-4b4f-9feb-b095d6c95d8a",
+              "name": "body.pull_request.user_login",
+              "value": "={{ $json.body.pull_request.user.login }}",
+              "type": "string"
+            },
+            {
+              "id": "df5f9d76-535a-45ef-8cf7-8df06056aa67",
+              "name": "body.pull_request.created_at",
+              "value": "={{ $json.body.pull_request.created_at }}",
+              "type": "string"
+            },
+            {
+              "id": "1c436739-fc5f-4c89-978c-ab51efed8f5d",
+              "name": "body.pull_request.updated_at",
+              "value": "={{ $json.body.pull_request.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "f3282d87-bf38-44ea-b222-8bf65e54a975",
+              "name": "body.repository.html_url",
+              "value": "={{ $json.body.repository.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "eaca0221-c450-4bc8-bfba-82a5b10d2048",
+              "name": "telegram.chat.id",
+              "value": "1260278001",
+              "type": "string"
+            },
+            {
+              "id": "eb6268b7-d595-4f99-8352-2ca3eec84fe5",
+              "name": "body.pull_request.number",
+              "value": "={{ $json.body.pull_request.number }}",
+              "type": "number"
+            },
+            {
+              "id": "fed1248b-f1d1-4b96-b526-b0fe0db9f1d4",
+              "name": "body.pull_request.head.ref",
+              "value": "={{ $json.body.pull_request.head.ref }}",
+              "type": "string"
+            },
+            {
+              "id": "980164da-0a06-4ac0-aff1-8c9821868a58",
+              "name": "body.pull_request.base.ref",
+              "value": "={{ $json.body.pull_request.base.ref }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -420,
+        -100
+      ],
+      "id": "ce3e3e99-6d17-4ad2-8836-e26c11fcb1d0",
+      "name": "FieldsSelection"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('FieldsSelection').item.json.telegram.chat.id }}",
+        "text": "=<b>🆕 New <a href=\"{{ $('FieldsSelection').item.json.body.pull_request.url }}\">PR #{{ $('FieldsSelection').item.json.body.pull_request.number }}</a> on <a href=\"{{ $('FieldsSelection').item.json.body.repository.html_url }}\">{{ $('FieldsSelection').item.json.body.repository.name }}</a>:</b>\n\n<b>Title:</b> {{ $('FieldsSelection').item.json.body.pull_request.title }}\n<b>Status:</b> {{ $('FieldsSelection').item.json.body.pull_request.state }}\n\n<i>{{ $('FieldsSelection').item.json.body.pull_request.user_login }} wants to merge {{ $('FieldsSelection').item.json.body.pull_request.commits }} commits into {{ $('FieldsSelection').item.json.body.pull_request.base.ref }} from {{ $('FieldsSelection').item.json.body.pull_request.head.ref }}</i>\n\n<b>➕</b> {{ $('FieldsSelection').item.json.body.pull_request.additions }} | <b>➖</b> {{ $('FieldsSelection').item.json.body.pull_request.deletions }} | <b>📝 Changed files:</b> {{ $('FieldsSelection').item.json.body.pull_request.changed_files }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        20
+      ],
+      "id": "d282ad6b-59ab-4f8d-81d5-752e95dc07f3",
+      "name": "Telegram",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Github Trigger').item.json.body.pull_request.url }}",
+        "value": "={{ $json.result.message_id }}",
+        "keyType": "string"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        560,
+        20
+      ],
+      "id": "f9631e1f-a918-4ceb-acbb-00237d814ca3",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f2442283-74a3-45c5-84bb-69111c0b69bb",
+              "leftValue": "={{ $json.message_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        -100
+      ],
+      "id": "70d5b637-66a8-4e3f-a02f-e5922ae641f5",
+      "name": "HasMessageId?"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message_id",
+        "key": "={{ $json.body.pull_request.url }}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -100
+      ],
+      "id": "2a8ef560-c7d7-4a34-ae94-7262f4f11f74",
+      "name": "GetMessageID",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('FieldsSelection').item.json.telegram.chat.id }}",
+        "text": "=<b> 🆕 PR Update #{{ $('FieldsSelection').item.json.body.pull_request.number }} </b>\n\n<b>📌 Status:</b> {{ $('FieldsSelection').item.json.body.pull_request.state }}\n\n<b>📊 Total commits:</b> {{ $('FieldsSelection').item.json.body.pull_request.commits }} | <b>📝 Changed files:</b> {{ $('FieldsSelection').item.json.body.pull_request.changed_files }}  \n\n<b>➕:</b> {{ $('FieldsSelection').item.json.body.pull_request.additions }} | <b>➖:</b> {{ $('FieldsSelection').item.json.body.pull_request.deletions }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $('GetMessageID').item.json.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        -220
+      ],
+      "id": "0f83197e-f992-4aff-a3a7-fff6ddbf4980",
+      "name": "ReplyToPR",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "owner": {
+          "__rl": true,
+          "value": "ivanildobarauna-dev",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ivanildobarauna.dev",
+          "mode": "name"
+        },
+        "events": [
+          "pull_request"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.githubTrigger",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        -100
+      ],
+      "id": "da723a73-478b-4d03-a98e-6697197c53bb",
+      "name": "Github Trigger",
+      "webhookId": "bc7d8404-e397-4362-b4fd-d4a7cf4700c8",
+      "credentials": {
+        "githubApi": {
+          "id": "hKtm86S0u3kylqdJ",
+          "name": "IvanildoBaraunaConnection"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "FieldsSelection": {
+      "main": [
+        [
+          {
+            "node": "GetMessageID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HasMessageId?": {
+      "main": [
+        [
+          {
+            "node": "ReplyToPR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMessageID": {
+      "main": [
+        [
+          {
+            "node": "HasMessageId?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github Trigger": {
+      "main": [
+        [
+          {
+            "node": "FieldsSelection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "79fb8805-410a-4fb9-9eaf-3227c088937b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8038ae3fc3fb39fd3d15323fd5f22964d079890e49da24db99a1c3d831d0f60a"
+  },
+  "id": "wk47tZXJvAXrTCz2",
+  "tags": [
+    {
+      "name": "github",
+      "id": "sqf1EriEOsiFo00D",
+      "createdAt": "2025-05-26T02:54:12.473Z",
+      "updatedAt": "2025-05-26T02:54:12.473Z"
+    }
+  ]
+}
