@@ -10,5 +10,3 @@ RUN npm install dd-trace
 COPY ./n8n/data/tracing.js /data/tracing.js
 
 USER node
-
-CMD ["tini", "--", "n8n"]
