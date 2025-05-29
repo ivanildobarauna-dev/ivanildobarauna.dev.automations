@@ -52,6 +52,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /root/n8n_ssh_key:/root/.ssh/id_rsa:ro
       - /root/n8n_ssh_config:/root/.ssh/config:ro
+      - /root/n8n_known_hosts:/root/.ssh/known_hosts
     restart: unless-stopped
     depends_on:
       - postgres

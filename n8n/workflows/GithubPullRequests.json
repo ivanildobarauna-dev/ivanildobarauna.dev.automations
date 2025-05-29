@@ -1,0 +1,702 @@
+{
+  "name": "GithuPullRequests",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "441ab43a-2e6b-446c-b526-51387ef433e2",
+              "name": "body.pull_request.title",
+              "value": "={{ $json.body.pull_request.title }}",
+              "type": "string"
+            },
+            {
+              "id": "285b3315-66e9-482e-9efc-8f06c497105d",
+              "name": "body.action",
+              "value": "={{ $json.body.action }}",
+              "type": "string"
+            },
+            {
+              "id": "4e34f3d0-acff-425b-b77e-770fd047a15c",
+              "name": "body.pull_request.url",
+              "value": "={{ $json.body.pull_request.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "205adcc4-3107-4671-8e20-e08556af4ed6",
+              "name": "body.pull_request.state",
+              "value": "={{ $json.body.pull_request.state }}",
+              "type": "string"
+            },
+            {
+              "id": "685fddb4-78e4-427b-b1b8-62ba88013eca",
+              "name": "body.pull_request.commits",
+              "value": "={{ $json.body.pull_request.commits }}",
+              "type": "number"
+            },
+            {
+              "id": "8915330b-9d38-48e2-b6cd-204cc4292d51",
+              "name": "body.pull_request.additions",
+              "value": "={{ $json.body.pull_request.additions }}",
+              "type": "number"
+            },
+            {
+              "id": "28bbbbb8-ce44-49f2-8276-aff9254b2cd4",
+              "name": "body.pull_request.deletions",
+              "value": "={{ $json.body.pull_request.deletions }}",
+              "type": "number"
+            },
+            {
+              "id": "b3b19555-db78-4545-bc89-8150d5e0d023",
+              "name": "body.pull_request.changed_files",
+              "value": "={{ $json.body.pull_request.changed_files }}",
+              "type": "number"
+            },
+            {
+              "id": "44f91693-69ca-45ff-998a-9f3ec8015655",
+              "name": "body.repository.name",
+              "value": "={{ $json.body.repository.name }}",
+              "type": "string"
+            },
+            {
+              "id": "cf3b3dda-9942-4b4f-9feb-b095d6c95d8a",
+              "name": "body.pull_request.user_login",
+              "value": "={{ $json.body.pull_request.user.login }}",
+              "type": "string"
+            },
+            {
+              "id": "df5f9d76-535a-45ef-8cf7-8df06056aa67",
+              "name": "body.pull_request.created_at",
+              "value": "={{ $json.body.pull_request.created_at }}",
+              "type": "string"
+            },
+            {
+              "id": "1c436739-fc5f-4c89-978c-ab51efed8f5d",
+              "name": "body.pull_request.updated_at",
+              "value": "={{ $json.body.pull_request.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "f3282d87-bf38-44ea-b222-8bf65e54a975",
+              "name": "body.repository.html_url",
+              "value": "={{ $json.body.repository.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "eaca0221-c450-4bc8-bfba-82a5b10d2048",
+              "name": "telegram.chat.id",
+              "value": "-1002588304306",
+              "type": "string"
+            },
+            {
+              "id": "eb6268b7-d595-4f99-8352-2ca3eec84fe5",
+              "name": "body.pull_request.number",
+              "value": "={{ $json.body.pull_request.number }}",
+              "type": "number"
+            },
+            {
+              "id": "fed1248b-f1d1-4b96-b526-b0fe0db9f1d4",
+              "name": "body.pull_request.head.ref",
+              "value": "={{ $json.body.pull_request.head.ref }}",
+              "type": "string"
+            },
+            {
+              "id": "980164da-0a06-4ac0-aff1-8c9821868a58",
+              "name": "body.pull_request.base.ref",
+              "value": "={{ $json.body.pull_request.base.ref }}",
+              "type": "string"
+            },
+            {
+              "id": "11f80ef2-9d56-40a1-a6f2-25de4be32b06",
+              "name": "body.pull_request.merged_by",
+              "value": "={{ $json.body.pull_request.merged_by }}",
+              "type": "string"
+            },
+            {
+              "id": "ef2e6491-7921-4b18-bc52-0cff518a4c1e",
+              "name": "telegram.thread.id",
+              "value": "5",
+              "type": "string"
+            },
+            {
+              "id": "4b987c15-dc99-44a8-8420-da6b2950c660",
+              "name": "body.pull_request.merged",
+              "value": "={{ $json.body.pull_request.merged }}",
+              "type": "boolean"
+            },
+            {
+              "id": "4485f25c-6172-4506-a8ed-80a185038e6c",
+              "name": "body.pull_request.merged_by.login",
+              "value": "={{ $json.body.pull_request.merged_by.login }}",
+              "type": "string"
+            },
+            {
+              "id": "690f7bbd-f887-4171-844d-86763eecb16b",
+              "name": "body.pull_request.merged_by.html_url",
+              "value": "={{ $json.body.pull_request.merged_by.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "15f844a5-6656-4bad-a96b-5fc511747128",
+              "name": "body.pull_request.merged_at",
+              "value": "={{ $json.body.pull_request.merged_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        20
+      ],
+      "id": "ce3e3e99-6d17-4ad2-8836-e26c11fcb1d0",
+      "name": "FieldsSelection"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('FieldsSelection').item.json.telegram.chat.id }}",
+        "text": "=<b>🆕 New <a href=\"{{ $('FieldsSelection').item.json.body.pull_request.url }}\">PR #{{ $('FieldsSelection').item.json.body.pull_request.number }}</a> on <a href=\"{{ $('FieldsSelection').item.json.body.repository.html_url }}\">{{ $('FieldsSelection').item.json.body.repository.name }}</a>:</b>\n\n<b>Title:</b> {{ $('FieldsSelection').item.json.body.pull_request.title }}\n<b>Status:</b> {{ $json.status }}\n\n<i>{{ $('FieldsSelection').item.json.body.pull_request.user_login }} wants to merge {{ $('FieldsSelection').item.json.body.pull_request.commits }} commits into {{ $('FieldsSelection').item.json.body.pull_request.base.ref }} from {{ $('FieldsSelection').item.json.body.pull_request.head.ref }}</i>\n\n<b>➕</b> {{ $('FieldsSelection').item.json.body.pull_request.additions }} | <b>➖</b> {{ $('FieldsSelection').item.json.body.pull_request.deletions }} | <b>📝 Changed files:</b> {{ $('FieldsSelection').item.json.body.pull_request.changed_files }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "message_thread_id": "={{ $('FieldsSelection').item.json.telegram.thread.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        220
+      ],
+      "id": "d282ad6b-59ab-4f8d-81d5-752e95dc07f3",
+      "name": "Telegram",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('FieldsSelection').item.json.body.pull_request.url }}",
+        "value": "={{ $json.result.message_id }}",
+        "keyType": "string"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        720,
+        220
+      ],
+      "id": "f9631e1f-a918-4ceb-acbb-00237d814ca3",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f2442283-74a3-45c5-84bb-69111c0b69bb",
+              "leftValue": "={{ $json.message_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        20
+      ],
+      "id": "70d5b637-66a8-4e3f-a02f-e5922ae641f5",
+      "name": "HasMessageId?"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message_id",
+        "key": "={{ $json.body.pull_request.url }}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        20
+      ],
+      "id": "2a8ef560-c7d7-4a34-ae94-7262f4f11f74",
+      "name": "GetMessageID",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('FieldsSelection').item.json.telegram.chat.id }}",
+        "text": "=<b>🔄 <a href=\"{{ $('FieldsSelection').item.json.body.pull_request.url }}\">PR #{{ $('FieldsSelection').item.json.body.pull_request.number }}</a> Update Summary </b>\n\n<b>📌 Status:</b> {{ $('FieldsSelection').item.json.body.pull_request.state }}\n<b>📊 Total commits:</b> {{ $('FieldsSelection').item.json.body.pull_request.commits }} | <b>📝 Changed files:</b> {{ $('FieldsSelection').item.json.body.pull_request.changed_files }}  \n<b>➕:</b> {{ $('FieldsSelection').item.json.body.pull_request.additions }} | <b>➖:</b> {{ $('FieldsSelection').item.json.body.pull_request.deletions }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $('GetMessageID').item.json.message_id }}",
+          "message_thread_id": "={{ $('FieldsSelection').item.json.telegram.thread.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        20
+      ],
+      "id": "0f83197e-f992-4aff-a3a7-fff6ddbf4980",
+      "name": "ReplyToPR",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"status\": \"{{ $('FieldsSelection').item.json.body.pull_request.state === 'open' ? '🟢 Open' : ($('FieldsSelection').item.json.body.pull_request.state === 'closed' ? '🔴 Closed' : '❔ Unknown') }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        280,
+        220
+      ],
+      "id": "edeb6a5a-132e-41d5-8bf6-14a5c0f631f5",
+      "name": "SetStatus"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gh-pulls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -820,
+        -80
+      ],
+      "id": "8da27966-530d-43f9-bf6a-e091e417ecd9",
+      "name": "Webhook",
+      "webhookId": "4dd5824b-2339-4637-9f5c-6f25271f6ac7"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ac4b1498-376a-4333-a825-f8ac02092953",
+                    "leftValue": "={{ $json.headers['x-github-event'] }}",
+                    "rightValue": "check_suite",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "check_suite"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.headers['x-github-event'] }}",
+                    "rightValue": "pull_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7304a7c0-163a-4016-bc09-cfbaf3d7ad48"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pull_request"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -600,
+        -80
+      ],
+      "id": "f8d23e83-6750-46fe-8fef-686c8f9d9122",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"check_suite.id\": \"{{ $json.body.check_suite.id }}\",\n  \"check_suite.status\": \"{{ $json.body.check_suite.status }}\",\n  \"check_suite.conclusion\": \"{{ $json.body.check_suite.conclusion }}\",\n  \"check_suite.head_branch\": \"{{ $json.body.check_suite.head_branch }}\",\n  \"check_suite.head_sha\": \"{{ $json.body.check_suite.head_sha }}\",\n  \"check_suite.url\": \"{{ $json.body.check_suite.url }}\",\n  \"check_suite.pull_request_url\": \"{{ $json.body.check_suite.pull_requests[0].url }}\",\n  \"check_suite.pull_request_number\": \"{{ $json.body.check_suite.pull_requests[0].number }}\",\n  \"check_suite.head_commit_message\": \"{{ $json.body.check_suite.head_commit.message }}\",\n  \"repository.full_name\": \"{{ $json.body.repository.full_name }}\",\n  \"sender.login\": \"{{ $json.body.sender.login }}\",\n  \"sender.url\": \"{{ $json.body.sender.html_url }}\",\n  \"telegram.chat.id\": -1002588304306,\n  \"telegram.thread.id\": 5\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        -280
+      ],
+      "id": "87467db0-7e7c-4036-9ae8-e22090b0bd85",
+      "name": "WorkflowFields"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message_id",
+        "key": "={{ $json.html_url }}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -280
+      ],
+      "id": "a1f20bc0-13ca-4a0f-a4b9-0fdea4f3aadb",
+      "name": "WorkflowGetMessageID",
+      "credentials": {
+        "redis": {
+          "id": "2ER0mQVOx81er2E9",
+          "name": "RedisConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.check_suite.pull_request_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        -280
+      ],
+      "id": "7273fe35-665c-4e12-bae4-94e5ef7f0fc7",
+      "name": "GetPullRequestParams"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('WorkflowFields').item.json.telegram.chat.id }}",
+        "text": "=✅ <b>Check Suite ID:</b> {{ $('WorkflowFields').item.json.check_suite.id }}\n⚙️ <b>Status:</b> {{ $('WorkflowFields').item.json.check_suite.status }}\n🎯 <b>Conclusion:</b> {{ $('WorkflowFields').item.json.check_suite.conclusion }}\n\n👤 <b>Triggered by:</b> <a href=\"{{ $('WorkflowFields').item.json.sender.url }}\">{{ $('WorkflowFields').item.json.sender.login }}</a>",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $json.message_id }}",
+          "message_thread_id": "={{ $('WorkflowFields').item.json.telegram.thread.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        -280
+      ],
+      "id": "902f38aa-d246-48d5-a6c1-9a8ceaff054c",
+      "name": "ReportWorkflowStatus",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Next\n\n- Add the merged status and merged by on Update Summary of PR"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        320
+      ],
+      "id": "c0211b08-fdf7-4317-bb8c-272ef3a61c3f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f3a7d573-881a-4a5f-9879-bde7155d2bfe",
+              "leftValue": "={{ $('FieldsSelection').item.json.body.pull_request.merged }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        -80
+      ],
+      "id": "623ac72e-0b81-4f5c-8b29-3df26927b265",
+      "name": "IsMerged"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('FieldsSelection').item.json.telegram.chat.id }}",
+        "text": "=✅ <b>PR Merged Successfully</b>\n\n🔗 <b>Merged by:</b> <a href=\"{{ $('FieldsSelection').item.json.body.pull_request.merged_by.html_url }}\">{{ $('FieldsSelection').item.json.body.pull_request.merged_by.login }}</a>\n\n🕒 <b>Merged at:</b> {{ $('FieldsSelection').item.json.body.pull_request.merged_at }}",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "reply_to_message_id": "={{ $('GetMessageID').item.json.message_id }}",
+          "message_thread_id": "={{ $('FieldsSelection').item.json.telegram.thread.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        -180
+      ],
+      "id": "93f18b4a-7988-4be6-9c0b-937ea8eba060",
+      "name": "ReportMerge",
+      "webhookId": "53df29d1-7def-4722-a1f8-b72f555a471e",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Wrtqe10sSS0PVdH",
+          "name": "BaraunaBotConnection"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "FieldsSelection": {
+      "main": [
+        [
+          {
+            "node": "GetMessageID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HasMessageId?": {
+      "main": [
+        [
+          {
+            "node": "IsMerged",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SetStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMessageID": {
+      "main": [
+        [
+          {
+            "node": "HasMessageId?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetStatus": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "WorkflowFields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FieldsSelection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WorkflowFields": {
+      "main": [
+        [
+          {
+            "node": "GetPullRequestParams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetPullRequestParams": {
+      "main": [
+        [
+          {
+            "node": "WorkflowGetMessageID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WorkflowGetMessageID": {
+      "main": [
+        [
+          {
+            "node": "ReportWorkflowStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IsMerged": {
+      "main": [
+        [
+          {
+            "node": "ReportMerge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ReplyToPR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "d1d85839-ac57-4c91-b75c-8955b92d47dc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8038ae3fc3fb39fd3d15323fd5f22964d079890e49da24db99a1c3d831d0f60a"
+  },
+  "id": "wk47tZXJvAXrTCz2",
+  "tags": [
+    {
+      "createdAt": "2025-05-26T02:54:12.473Z",
+      "updatedAt": "2025-05-26T02:54:12.473Z",
+      "id": "sqf1EriEOsiFo00D",
+      "name": "github"
+    }
+  ]
+}

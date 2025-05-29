@@ -334,7 +334,7 @@
     },
     {
       "parameters": {
-        "command": "ssh root@168.231.100.213 \"/opt/scripts/n8n/workflows/InfraCommander/logs.sh\""
+        "command": "ssh root@168.231.100.213 \"/opt/scripts/n8n/workflows/InfraCommander/health_check.sh\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -517,11 +517,18 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7f10b775-78d7-4e64-aa2d-4365cafcd513",
+  "versionId": "991e348d-a361-4dcc-9c10-55a1536c3ec9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8038ae3fc3fb39fd3d15323fd5f22964d079890e49da24db99a1c3d831d0f60a"
   },
   "id": "BL25ldc2Zo6brD4k",
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-05-25T22:42:10.382Z",
+      "updatedAt": "2025-05-25T22:42:10.382Z",
+      "id": "NcBpCWcUTc80Q2Cc",
+      "name": "infra"
+    }
+  ]
 }
