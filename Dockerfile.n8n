@@ -5,18 +5,10 @@ USER root
 RUN apk update && \
     apk add docker-cli curl
 
-USER node
-RUN npm install -g dd-trace    
+# Copia os arquivos de tracing para dentro do container
+COPY ./n8n/data /tracer
 
-COPY ./n8n/data/tracing.js /data/tracing.js
-
-##### Configuração do Datadog
-COPY ./n8n/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-#####
+# Instala o dd-trace localmente no diretório do tracer
+RUN cd /tracer && npm install
 
 USER node
-
-##### Configuração do Datadog
-# ENTRYPOINT ["/entrypoint.sh"]
-#####
