@@ -3,6 +3,15 @@ FROM n8nio/n8n
 USER root
 
 RUN apk update && \
-    apk add docker-cli
+    apk add docker-cli curl
+
+# Instala o tracer do Datadog
+RUN npm install dd-trace
+
+# Copia o script de tracing para dentro da imagem
+COPY ./n8n/data/tracing.js /data/tracing.js
 
 USER node
+
+# Executa o n8n com o tracer pré-carregado
+CMD ["node", "-r", "/data/tracing.js", "/usr/local/lib/node_modules/n8n/dist/index.js"]
