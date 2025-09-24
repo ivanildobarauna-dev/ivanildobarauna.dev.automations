@@ -103,16 +103,10 @@ jobs:
               container_name: n8n
               network_mode: host
               restart: unless-stopped
+              depends_on:
+                - postgres
+                - redis
               environment:
-                # Datadog Environment
-                - DD_SERVICE=n8n
-                - DD_ENV=production
-                - DD_VERSION=1.0.0
-                - DD_TRACE_SAMPLE_RATE=1.0
-                - DD_AGENT_HOST=localhost
-                - DD_PROCESS_AGENT_ENABLED=true
-                - DD_TAGS="app:n8n,tech:nodejs,role:automation"
-                - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
                 # N8N Environment
                 - N8N_TRUSTED_PROXIES=0.0.0.0/0
                 - NODE_OPTIONS=-r /tracer/tracing.js --dns-result-order=ipv4first
@@ -132,15 +126,28 @@ jobs:
                 - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
                 - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
                 - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-                # Postgres Environment
+                # Configurações do PostgreSQL
                 - DB_TYPE=postgresdb
                 - DB_POSTGRESDB_HOST=localhost
                 - DB_POSTGRESDB_PORT=5432
                 - DB_POSTGRESDB_DATABASE=n8n
                 - DB_POSTGRESDB_USER=${POSTGRES_USER}
                 - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+                # Configurações do Datadog
+                - DD_SERVICE=n8n
+                - DD_ENV=production
+                - DD_VERSION=1.0.0
+                - DD_TRACE_SAMPLE_RATE=1.0
+                - DD_AGENT_HOST=localhost
+                - DD_PROCESS_AGENT_ENABLED=true
+                - DD_TAGS="app:n8n"
+                - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               volumes:
-                - n8n_data:/home/node/.n8n
+                - type: volume
+                  source: n8n_data
+                  target: /home/node/.n8n
+                  volume:
+                    nocopy: true
                 - /var/run/docker.sock:/var/run/docker.sock
                 - /root/n8n_ssh_key:/root/.ssh/id_rsa:ro
                 - /root/n8n_ssh_config:/root/.ssh/config:ro
@@ -165,7 +172,7 @@ jobs:
                 - DD_TRACE_SAMPLE_RATE=1.0
                 - DD_AGENT_HOST=localhost
                 - DD_PROCESS_AGENT_ENABLED=true
-                - DD_TAGS="app:n8n,tech:postgres,role:database"
+                - DD_TAGS="app:postgres"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
                 - POSTGRES_USER=${POSTGRES_USER}
                 - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -200,7 +207,7 @@ jobs:
                 - DD_TRACE_SAMPLE_RATE=1.0
                 - DD_AGENT_HOST=localhost
                 - DD_PROCESS_AGENT_ENABLED=true
-                - DD_TAGS="app:n8n,tech:redis,role:cache"
+                - DD_TAGS="app:redis"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               command: [
                 "redis-server",
