@@ -86,7 +86,7 @@ jobs:
       - name: Create temporary .env file
         run: |
           cat > .env << EOF
-          N8N_REDIS_PASSWORD=""
+          N8N_REDIS_PASSWORD=
           N8N_BASIC_AUTH_USER=${{ secrets.N8N_USER }}
           N8N_BASIC_AUTH_PASSWORD=${{ secrets.N8N_PASSWORD }}
           N8N_USER_MANAGEMENT_JWT_SECRET=${{ secrets.N8N_JWT_SECRET }}
