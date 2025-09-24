@@ -129,7 +129,7 @@ jobs:
                 - N8N_REDIS_HOST=localhost
                 - N8N_REDIS_PORT=6379
                 - N8N_REDIS_DB=0
-                - N8N_REDIS_PASSWORD=redis
+                - N8N_REDIS_PASSWORD="redis"
                 - N8N_USER_MANAGEMENT_DISABLED=true
                 # - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
                 # - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
