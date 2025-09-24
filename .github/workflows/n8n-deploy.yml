@@ -103,6 +103,8 @@ jobs:
           cat > docker-compose.prod.yaml << EOF
           services:
             n8n:
+              env_file:
+                - .env
               user: root
               image: $IMAGE_WITH_TAG
               container_name: n8n
