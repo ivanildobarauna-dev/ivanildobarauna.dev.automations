@@ -1,0 +1,256 @@
+name: n8n Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'tests/**'
+      - '.github/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-push-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for n8n
+        id: meta-n8n
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/n8n
+
+      - name: Build and push n8n image
+        id: push-n8n
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.n8n
+          push: true
+          tags: ${{ steps.meta-n8n.outputs.tags }}
+          labels: ${{ steps.meta-n8n.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Generate artifact attestation for n8n
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/n8n
+          subject-digest: ${{ steps.push-n8n.outputs.digest }}
+          push-to-registry: true
+
+      # --- VPS DEPLOY ---
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+
+      - name: Add host to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.VPS_SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create app directory on VPS
+        run: |
+          ssh ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} "mkdir -p /home/ubuntu/app/n8n"
+
+      - name: Create temporary .env file
+        run: |
+          cat > .env << EOF
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          N8N_USER=${{ secrets.N8N_USER }}
+          N8N_PASSWORD=${{ secrets.N8N_PASSWORD }}
+          N8N_JWT_SECRET=${{ secrets.N8N_JWT_SECRET }}
+          N8N_ENCRYPTION_KEY=${{ secrets.N8N_ENCRYPTION_KEY }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          EOF
+
+      - name: Create production docker-compose
+        run: |
+          # Get the full image name with tag
+          IMAGE_WITH_TAG=$(echo ${{ steps.meta-n8n.outputs.tags }} | jq -r '.[0]')
+          
+          cat > docker-compose.prod.yaml << EOF
+          services:
+            n8n:
+              user: root
+              image: $IMAGE_WITH_TAG
+              container_name: n8n
+              network_mode: host
+              restart: unless-stopped
+              depends_on:
+                - postgres
+                - redis
+              environment:
+                # N8N Environment
+                - N8N_TRUSTED_PROXIES=0.0.0.0/0
+                - NODE_OPTIONS=-r /tracer/tracing.js --dns-result-order=ipv4first
+                - N8N_BASIC_AUTH_ACTIVE=true
+                - N8N_BASIC_AUTH_USER=${N8N_USER}
+                - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+                - N8N_HOST=n8n.ivanildobarauna.dev
+                - WEBHOOK_TUNNEL_URL=https://n8n.ivanildobarauna.dev
+                - WEBHOOK_URL=https://n8n.ivanildobarauna.dev/
+                - GENERIC_TIMEZONE=UTC
+                - N8N_PORT=5678
+                - N8N_REDIS_HOST=localhost
+                - N8N_REDIS_PORT=6379
+                - N8N_REDIS_DB=0
+                - N8N_REDIS_PASSWORD=${REDIS_PASSWORD}
+                - N8N_USER_MANAGEMENT_DISABLED=true
+                - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
+                - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+                - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+                # Configurações do PostgreSQL
+                - DB_TYPE=postgresdb
+                - DB_POSTGRESDB_HOST=localhost
+                - DB_POSTGRESDB_PORT=5432
+                - DB_POSTGRESDB_DATABASE=n8n
+                - DB_POSTGRESDB_USER=${POSTGRES_USER}
+                - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+                # Configurações do Datadog
+                - DD_SERVICE=n8n
+                - DD_ENV=production
+                - DD_VERSION=1.0.0
+                - DD_TRACE_SAMPLE_RATE=1.0
+                - DD_AGENT_HOST=localhost
+                - DD_PROCESS_AGENT_ENABLED=true
+                - DD_TAGS="app:n8n"
+                - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
+              volumes:
+                - type: volume
+                  source: n8n_data
+                  target: /home/node/.n8n
+                  volume:
+                    nocopy: true
+                - /var/run/docker.sock:/var/run/docker.sock
+                - /root/n8n_ssh_key:/root/.ssh/id_rsa:ro
+                - /root/n8n_ssh_config:/root/.ssh/config:ro
+                - /root/n8n_known_hosts:/root/.ssh/known_hosts
+              labels:
+                com.datadoghq.ad.logs: '[{"source": "nodejs", "service": "n8n.ivanildobarauna.dev"}]'
+                tags.env: "production"
+                tags.service: "n8n.ivanildobarauna.dev"
+                tags.tech: "nodejs"
+                tags.app: "n8n"
+                tags.role: "automation"
+
+            postgres:
+              image: postgres:15
+              container_name: postgres
+              network_mode: host
+              restart: unless-stopped
+              environment:
+                - DD_SERVICE=postgres
+                - DD_ENV=production
+                - DD_VERSION=1.0.0
+                - DD_TRACE_SAMPLE_RATE=1.0
+                - DD_AGENT_HOST=localhost
+                - DD_PROCESS_AGENT_ENABLED=true
+                - DD_TAGS="app:postgres"
+                - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
+                - POSTGRES_USER=${POSTGRES_USER}
+                - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+                - POSTGRES_DB=n8n
+              command: >
+                postgres
+                -c shared_preload_libraries=pg_stat_statements
+                -c track_activity_query_size=4096
+                -c pg_stat_statements.track=ALL
+                -c pg_stat_statements.max=10000
+                -c pg_stat_statements.track_utility=off
+                -c track_io_timing=on
+              volumes:
+                - postgres_data:/var/lib/postgresql/data
+              labels:
+                com.datadoghq.ad.logs: '[{"source": "postgresql", "service": "postgres.n8n"}]'
+                tags.env: "production"
+                tags.Service: "postgres.n8n"
+                tags.tech: "postgres"
+                tags.app: "n8n"
+                tags.role: "database"
+
+            redis:
+              image: redis:7
+              container_name: redis
+              network_mode: host
+              restart: unless-stopped
+              environment:
+                - DD_SERVICE=redis
+                - DD_ENV=production
+                - DD_VERSION=1.0.0
+                - DD_TRACE_SAMPLE_RATE=1.0
+                - DD_AGENT_HOST=localhost
+                - DD_PROCESS_AGENT_ENABLED=true
+                - DD_TAGS="app:redis"
+                - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
+              command: [
+                "redis-server",
+                "--appendonly", "yes",
+                "--requirepass", "${REDIS_PASSWORD}",
+                "--protected-mode", "yes",
+                "--maxmemory", "512mb",
+                "--maxmemory-policy", "allkeys-lru"
+              ]
+              volumes:
+                - redis_data:/data
+              labels:
+                com.datadoghq.ad.logs: '[{"source": "redis", "service": "redis.n8n"}]'
+                tags.env: "production"
+                tags.Service: "redis.n8n"
+                tags.tech: "redis"
+                tags.app: "n8n"
+                tags.role: "cache"
+
+          volumes:
+            n8n_data:
+              external: true
+            postgres_data:
+              external: true
+            redis_data:
+              external: true
+          EOF
+
+      - name: Sync docker-compose and env to VPS
+        run: |
+          rsync -avz --delete \
+            docker-compose.prod.yaml .env \
+            ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }}:/home/ubuntu/app/n8n/
+
+      - name: Deploy on VPS
+        run: |
+          ssh ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} << 'EOF'
+            cd /home/ubuntu/app/n8n
+            docker compose -f docker-compose.prod.yaml pull
+            docker compose -f docker-compose.prod.yaml up -d --remove-orphans
+            docker system prune -f
+          EOF
+
+    environment:
+      name: Production
+      url: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
