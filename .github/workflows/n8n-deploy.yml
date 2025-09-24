@@ -80,7 +80,7 @@ jobs:
 
       - name: Create temporary .env file
         run: |
-          cat > .env << 'EOF'
+          cat > .env << EOF
           REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
           N8N_USER=${{ secrets.N8N_USER }}
           N8N_PASSWORD=${{ secrets.N8N_PASSWORD }}
@@ -114,7 +114,6 @@ jobs:
                 - DD_TAGS="app:n8n,tech:nodejs,role:automation"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               # N8N Environment
-                - DB_TYPE=postgresdb
                 - N8N_TRUSTED_PROXIES=0.0.0.0/0
                 - NODE_OPTIONS=-r /tracer/tracing.js --dns-result-order=ipv4first
                 - N8N_BASIC_AUTH_ACTIVE=true
