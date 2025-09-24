@@ -223,7 +223,6 @@ jobs:
               command: [
                 "redis-server",
                 "--appendonly", "yes",
-                "--requirepass", "${N8N_REDIS_PASSWORD}",
                 "--protected-mode", "yes",
                 "--maxmemory", "512mb",
                 "--maxmemory-policy", "allkeys-lru"
