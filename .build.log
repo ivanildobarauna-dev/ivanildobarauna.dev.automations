@@ -1,0 +1,17 @@
+2025-09-24T02:40:07.849026 Project directory: /root/github.com/ivanildobarauna.dev.automations
+2025-09-24T02:40:07.849338 Deploying project
+2025-09-24T02:40:07.849997 ------------------------------
+2025-09-24T02:40:07.972404  Container redis  Recreate
+2025-09-24T02:40:07.972471  Container postgres  Recreate
+2025-09-24T02:40:08.221481  Container redis  Recreated
+2025-09-24T02:40:08.223936  Container postgres  Recreated
+2025-09-24T02:40:08.224428  Container n8n  Recreate
+2025-09-24T02:40:08.529712  Container n8n  Recreated
+2025-09-24T02:40:08.531733  Container redis  Starting
+2025-09-24T02:40:08.531761  Container postgres  Starting
+2025-09-24T02:40:08.714518  Container redis  Started
+2025-09-24T02:40:08.722196  Container postgres  Started
+2025-09-24T02:40:08.722236  Container n8n  Starting
+2025-09-24T02:40:08.923144  Container n8n  Started
+2025-09-24T02:40:08.931799 ------------------------------
+2025-09-24T02:40:08.931849 Project successfully deployed

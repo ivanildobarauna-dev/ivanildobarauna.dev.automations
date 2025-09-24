@@ -41,6 +41,7 @@ services:
       - DD_AGENT_HOST=localhost
       - DD_PROCESS_AGENT_ENABLED=true
       - DD_TAGS="app:n8n"
+      - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
     volumes:
       - type: volume
         source: n8n_data
@@ -69,9 +70,18 @@ services:
       - DD_AGENT_HOST=localhost
       - DD_PROCESS_AGENT_ENABLED=true
       - DD_TAGS="app:postgres"
+      - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
       - POSTGRES_USER=n8n
       - POSTGRES_PASSWORD=n8n
       - POSTGRES_DB=n8n
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c track_activity_query_size=4096
+      -c pg_stat_statements.track=ALL
+      -c pg_stat_statements.max=10000
+      -c pg_stat_statements.track_utility=off
+      -c track_io_timing=on
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -88,6 +98,7 @@ services:
       - DD_AGENT_HOST=localhost
       - DD_PROCESS_AGENT_ENABLED=true
       - DD_TAGS="app:redis"
+      - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
     command: [
       "redis-server",
       "--appendonly", "yes",
