@@ -104,6 +104,7 @@ jobs:
               network_mode: host
               restart: unless-stopped
               environment:
+              # Datadog Environment
                 - DD_SERVICE=n8n
                 - DD_ENV=production
                 - DD_VERSION=1.0.0
@@ -112,6 +113,33 @@ jobs:
                 - DD_PROCESS_AGENT_ENABLED=true
                 - DD_TAGS="app:n8n,tech:nodejs,role:automation"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
+              # N8N Environment
+                - DB_TYPE=postgresdb
+                - N8N_TRUSTED_PROXIES=0.0.0.0/0
+                - NODE_OPTIONS=-r /tracer/tracing.js --dns-result-order=ipv4first
+                - N8N_BASIC_AUTH_ACTIVE=true
+                - N8N_BASIC_AUTH_USER=${N8N_USER}
+                - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+                - N8N_HOST=n8n.ivanildobarauna.dev
+                - WEBHOOK_TUNNEL_URL=https://n8n.ivanildobarauna.dev
+                - WEBHOOK_URL=https://n8n.ivanildobarauna.dev/
+                - GENERIC_TIMEZONE=UTC
+                - N8N_PORT=5678
+                - N8N_REDIS_HOST=localhost
+                - N8N_REDIS_PORT=6379
+                - N8N_REDIS_DB=0
+                - N8N_REDIS_PASSWORD=${REDIS_PASSWORD}
+                - N8N_USER_MANAGEMENT_DISABLED=true
+                - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
+                - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+                - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+              # Postgress Environment
+                - DB_TYPE=postgresdb
+                - DB_POSTGRESDB_HOST=localhost
+                - DB_POSTGRESDB_PORT=5432
+                - DB_POSTGRESDB_DATABASE=n8n
+                - DB_POSTGRESDB_USER=${POSTGRES_USER}
+                - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
               volumes:
                 - n8n_data:/home/node/.n8n
                 - /var/run/docker.sock:/var/run/docker.sock
@@ -177,8 +205,10 @@ jobs:
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               command: [
                 "redis-server",
+                "--appendonly", "yes",
                 "--requirepass", "${REDIS_PASSWORD}",
-                "--maxmemory", "256mb",
+                "--protected-mode", "yes",
+                "--maxmemory", "512mb",
                 "--maxmemory-policy", "allkeys-lru"
               ]
               volumes:
@@ -193,8 +223,11 @@ jobs:
 
           volumes:
             n8n_data:
+              external: true
             postgres_data:
+              external: true
             redis_data:
+              external: true
           EOF
 
           # Replace the image placeholder with the actual image name and tag
