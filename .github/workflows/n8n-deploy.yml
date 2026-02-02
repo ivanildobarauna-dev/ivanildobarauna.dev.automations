@@ -148,7 +148,6 @@ jobs:
                 - DD_VERSION=1.0.0
                 - DD_TRACE_SAMPLE_RATE=1.0
                 - DD_AGENT_HOST=localhost
-                - DD_PROCESS_AGENT_ENABLED=true
                 - DD_TAGS="app:n8n"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               volumes:
@@ -180,7 +179,6 @@ jobs:
                 - DD_VERSION=1.0.0
                 - DD_TRACE_SAMPLE_RATE=1.0
                 - DD_AGENT_HOST=localhost
-                - DD_PROCESS_AGENT_ENABLED=true
                 - DD_TAGS="app:postgres"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
                 - POSTGRES_USER=${POSTGRES_USER}
@@ -214,8 +212,6 @@ jobs:
                 - DD_ENV=production
                 - DD_VERSION=1.0.0
                 - DD_TRACE_SAMPLE_RATE=1.0
-                - DD_AGENT_HOST=localhost
-                - DD_PROCESS_AGENT_ENABLED=true
                 - DD_TAGS="app:redis"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
               command: [
