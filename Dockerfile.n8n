@@ -1,4 +1,4 @@
-FROM n8nio/n8n:1.123.18
+FROM n8nio/n8n:2.10.3
 
 USER root
 # Copia e instala dd-trace
