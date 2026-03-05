@@ -107,12 +107,12 @@ jobs:
         run: |
           # Get the full image name with tag
           IMAGE_WITH_TAG=$(echo "${{ steps.meta-n8n.outputs.tags }}" | head -n 1)
-          
-          cat > docker-compose.prod.yaml << EOF
+
+          cat > docker-compose.prod.yaml << 'EOF'
           services:
             n8n:
               user: root
-              image: $IMAGE_WITH_TAG
+              image: ${IMAGE_WITH_TAG}
               container_name: n8n
               network_mode: host
               restart: unless-stopped
@@ -244,6 +244,9 @@ jobs:
             redis_data:
               external: true
           EOF
+
+          # Substitute only the IMAGE_WITH_TAG variable
+          sed -i "s|\${IMAGE_WITH_TAG}|$IMAGE_WITH_TAG|g" docker-compose.prod.yaml
 
       - name: Sync docker-compose and env to VPS
         run: |
