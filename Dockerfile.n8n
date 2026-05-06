@@ -1,11 +1,7 @@
-FROM n8nio/n8n:stable
+FROM n8nio/n8n:2.10.3
 
 USER root
-
-RUN apk update && \
-    apk add docker-cli curl
-
-# Copia e instala dd-trace localmente
+# Copia e instala dd-trace
 COPY ./n8n/data /tracer
 RUN cd /tracer && npm install
 
