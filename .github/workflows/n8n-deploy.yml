@@ -94,11 +94,12 @@ jobs:
       - name: Create temporary .env file
         run: |
           cat > .env << EOF
-          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-          N8N_USER=${{ secrets.N8N_USER }}
-          N8N_PASSWORD=${{ secrets.N8N_PASSWORD }}
-          N8N_JWT_SECRET=${{ secrets.N8N_JWT_SECRET }}
+          N8N_BASIC_AUTH_USER=${{ secrets.N8N_USER }}
+          N8N_BASIC_AUTH_PASSWORD=${{ secrets.N8N_PASSWORD }}
+          N8N_USER_MANAGEMENT_JWT_SECRET=${{ secrets.N8N_JWT_SECRET }}
           N8N_ENCRYPTION_KEY=${{ secrets.N8N_ENCRYPTION_KEY }}
+          DB_POSTGRESDB_USER=${{ secrets.POSTGRES_USER }}
+          DB_POSTGRESDB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           EOF
@@ -111,6 +112,8 @@ jobs:
           cat > docker-compose.prod.yaml << 'EOF'
           services:
             n8n:
+              env_file:
+                - .env
               user: root
               image: ${IMAGE_WITH_TAG}
               container_name: n8n
@@ -124,8 +127,8 @@ jobs:
                 - N8N_TRUSTED_PROXIES=0.0.0.0/0
                 - NODE_OPTIONS=-r /tracer/tracing.js --dns-result-order=ipv4first
                 - N8N_BASIC_AUTH_ACTIVE=true
-                - N8N_BASIC_AUTH_USER=${N8N_USER}
-                - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+                # - N8N_BASIC_AUTH_USER=${N8N_USER}
+                # - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
                 - N8N_HOST=n8n.ivanildobarauna.dev
                 - WEBHOOK_TUNNEL_URL=https://n8n.ivanildobarauna.dev
                 - WEBHOOK_URL=https://n8n.ivanildobarauna.dev/
@@ -134,10 +137,10 @@ jobs:
                 - N8N_REDIS_HOST=localhost
                 - N8N_REDIS_PORT=6379
                 - N8N_REDIS_DB=0
-                - N8N_REDIS_PASSWORD=${REDIS_PASSWORD}
+                - N8N_REDIS_PASSWORD="redis"
                 - N8N_USER_MANAGEMENT_DISABLED=true
-                - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
-                - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+                # - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
+                # - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
                 - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
                 - NODES_EXCLUDE="[]"
                 # Configurações do PostgreSQL
@@ -145,8 +148,8 @@ jobs:
                 - DB_POSTGRESDB_HOST=127.0.0.1
                 - DB_POSTGRESDB_PORT=5432
                 - DB_POSTGRESDB_DATABASE=n8n
-                - DB_POSTGRESDB_USER=${POSTGRES_USER}
-                - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+                # - DB_POSTGRESDB_USER=${POSTGRES_USER}
+                # - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
                 # Configurações do Datadog
                 - DD_SERVICE=n8n
                 - DD_ENV=production
@@ -186,8 +189,8 @@ jobs:
                 - DD_AGENT_HOST=localhost
                 - DD_TAGS="app:postgres"
                 - DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
-                - POSTGRES_USER=${POSTGRES_USER}
-                - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+                # - POSTGRES_USER=${POSTGRES_USER}
+                # - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
                 - POSTGRES_DB=n8n
               command: >
                 postgres
@@ -208,6 +211,8 @@ jobs:
                 tags.role: "database"
 
             redis:
+              env_file:
+                - .env
               image: redis:7
               container_name: redis
               network_mode: host
@@ -222,7 +227,7 @@ jobs:
               command: [
                 "redis-server",
                 "--appendonly", "yes",
-                "--requirepass", "${REDIS_PASSWORD}",
+                "--requirepass", "redis",
                 "--protected-mode", "yes",
                 "--maxmemory", "512mb",
                 "--maxmemory-policy", "allkeys-lru"
