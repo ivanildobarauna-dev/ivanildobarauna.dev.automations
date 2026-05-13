@@ -16,20 +16,26 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-push-and-deploy:
+  build-and-package:
+    name: Build n8n image and prepare deploy bundle
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
-
+    outputs:
+      image_with_tag: ${{ steps.bundle.outputs.image_with_tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Compute lowercase image name
+        run: |
+          LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE_NAME=${LOWER}" >> "$GITHUB_ENV"
 
       - name: Log in to the Container registry
         uses: docker/login-action@v4
@@ -47,6 +53,7 @@ jobs:
             type=ref,event=branch
             type=sha,prefix={{branch}}-
             type=raw,value=latest
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 
@@ -76,24 +83,16 @@ jobs:
           subject-digest: ${{ steps.push-n8n.outputs.digest }}
           push-to-registry: true
 
-      # --- VPS DEPLOY ---
-      - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.10.0
-        with:
-          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-
-      - name: Add host to known hosts
+      - name: Prepare deploy bundle
+        id: bundle
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.VPS_SSH_HOST }} >> ~/.ssh/known_hosts
+          mkdir -p deploy
 
-      - name: Create app directory on VPS
-        run: |
-          ssh ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} "mkdir -p /home/ubuntu/app/n8n"
+          # Use the first tag emitted by metadata-action (the branch ref, e.g. ...:main)
+          IMAGE_WITH_TAG=$(echo "${{ steps.meta-n8n.outputs.tags }}" | head -n 1)
+          echo "image_with_tag=${IMAGE_WITH_TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Create temporary .env file
-        run: |
-          cat > .env << EOF
+          cat > deploy/.env << EOF
           N8N_BASIC_AUTH_USER=${{ secrets.N8N_USER }}
           N8N_BASIC_AUTH_PASSWORD=${{ secrets.N8N_PASSWORD }}
           N8N_USER_MANAGEMENT_JWT_SECRET=${{ secrets.N8N_JWT_SECRET }}
@@ -104,12 +103,7 @@ jobs:
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           EOF
 
-      - name: Create production docker-compose
-        run: |
-          # Get the full image name with tag
-          IMAGE_WITH_TAG=$(echo "${{ steps.meta-n8n.outputs.tags }}" | head -n 1)
-
-          cat > docker-compose.prod.yaml << 'EOF'
+          cat > deploy/docker-compose.prod.yaml << 'EOF'
           services:
             n8n:
               env_file:
@@ -251,27 +245,31 @@ jobs:
               external: true
           EOF
 
-          # Substitute only the IMAGE_WITH_TAG variable
-          sed -i "s|\${IMAGE_WITH_TAG}|$IMAGE_WITH_TAG|g" docker-compose.prod.yaml
+          # Substitute IMAGE_WITH_TAG into the compose file
+          sed -i "s|\${IMAGE_WITH_TAG}|${IMAGE_WITH_TAG}|g" deploy/docker-compose.prod.yaml
 
-      - name: Sync docker-compose and env to VPS
-        run: |
-          rsync -avz --delete \
-            docker-compose.prod.yaml .env \
-            ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }}:/home/ubuntu/app/n8n/
+      - name: Upload deploy bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: n8n-deploy-bundle
+          path: deploy/
+          retention-days: 1
 
-      - name: Deploy on VPS
-        run: |
-          ssh ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} << 'EOF'
-            cd /home/ubuntu/app/n8n
-            # Remove old n8n image to force fresh pull
-            docker rmi -f "$(docker image inspect ghcr.io/ivanildobarauna-dev/ivanildobarauna.dev.automations/n8n:main -f '{{.ID}}' 2>/dev/null || true)" 2>/dev/null || true
-            # Pull and deploy
-            docker compose -f docker-compose.prod.yaml pull --policy always
-            docker compose -f docker-compose.prod.yaml up -d --remove-orphans --force-recreate
-            docker system prune -f
-          EOF
-
-    environment:
-      name: Production
-      url: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+  deploy:
+    needs: build-and-package
+    uses: ivanildobarauna/github-workflows/.github/workflows/deploy-compose-ssh.yml@v1
+    with:
+      artifact-name: n8n-deploy-bundle
+      compose-file: docker-compose.prod.yaml
+      remote-path: /home/ubuntu/app/n8n
+      pull-policy-always: true
+      force-recreate: true
+      # Remove the previously-pulled image to force the pull to fetch a fresh copy
+      # of the mutable branch tag. Tolerates the image not existing locally yet.
+      pre-deploy-command: |
+        docker rmi -f "$(docker image inspect ${{ needs.build-and-package.outputs.image_with_tag }} -f '{{.ID}}' 2>/dev/null || true)" 2>/dev/null || true
+      environment: Production
+    secrets:
+      VPS_SSH_HOST: ${{ secrets.VPS_SSH_HOST }}
+      VPS_SSH_USER: ${{ secrets.VPS_SSH_USER }}
+      VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
